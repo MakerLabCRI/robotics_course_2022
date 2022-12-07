@@ -1,4 +1,4 @@
-## Ideation Report Template ##
+## Ideation Report ##
 
 ### Path Planning Arduino ###
 
