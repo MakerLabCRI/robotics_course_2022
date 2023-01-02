@@ -63,7 +63,7 @@ struct Grid
 } PF ;
 
 
-byte H(byte curR, byte curC, byte goalS)  // manhattan distance 
+byte H(byte curR, byte curC, byte goalS)  // manhattan distance (Sum of the distance between two vectors)
 {
  byte rowg, colg;
  byte manhattan=0;
