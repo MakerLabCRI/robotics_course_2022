@@ -4,7 +4,7 @@
  * by Clemence, Romaric & Tiffany 
  *
  * This robot will find the shortest path from point A to B
- * in a 8x8 grid while avoiding obstacles placed on the grid.
+ * in a 8x8 grid while avoiding known obstacles placed on the grid.
  * 
  */
 
@@ -58,22 +58,22 @@ int goal_y = 4;
 int x=0;
 int y=0;
 
-//temp variables
+//temporary variables
 int counter=0;
 
-//when searching for a node with a lower value
+//for looking for smallest node number
 int minimum_node=250;
 int min_node_location=0;
-int reset_min=250;//anything above this number is a special item, ie a wall or robot
+int reset_min=250;//
 
 //defining grid for pathfinding 
 
-int grid[8][8]=	{{0,0,0,0,0,0},
-				 {0,0,0,0,0,0},
-				 {0,255,0,0,0,0},
-				 {0,0,0,255,0,0},
-				 {0,0,0,0,1,0},
-				 {0,0,0,0,0,0}};
+int grid[8][8]=	{{0,0,0,0,0,0,0,0},
+				 {0,0,0,0,0,0,0,0},
+				 {0,255,0,0,0,0,0,0},
+				 {0,0,0,255,0,0,0,0},
+				 {0,0,0,0,1,0,0,0},
+				 {0,0,0,0,0,0,0,0}};
 
 /********************functions*************/
 
@@ -95,11 +95,11 @@ int propagate_wavefront(int robot_x, int robot_y, int goal_x, int goal_y)
     // If this location is not the goal, update its value
     else if (grid[robot_x][robot_y] != goal)
     {
-      grid[robot_x][robot_y] = grid[robot_x][robot_y] + 1;
+      grid[robot_x][robot_y] = min_surrounding_node_value + 1;
     }
 
     // Check if the robot has reached the goal
-    if (grid[robot_x][robot_y] < reset_min && grid[robot_x][robot_y] == goal)
+    if (grid[robot_x][robot_y] < reset_min && min_surrounding_node_value == goal)
     {
       // Finished! Tell robot to start moving down path
       return min_node_location;
@@ -117,24 +117,102 @@ int propagate_wavefront(int robot_x, int robot_y, int goal_x, int goal_y)
   return 0;
 }
 
+void unpropagate(int robot_x, int robot_y)//clears old path to determine new path
+	{
+	//stay within boundary
+	for(x=0; x<6; x++)
+		for(y=0; y<6; y++)
+			if (map[x][y] != wall && map[x][y] != goal) //if this location is something, just ignore it
+				map[x][y] = nothing;//clear that space
+	
+	//store robot location in map
+	map[robot_x][robot_y]=robot;
+	//store robot location in map
+	map[goal_x][goal_y]=goal;
+	}
+
+//if no solution is found, delete all walls from map
+void clear_map(void)
+	{	
+	for(x=0;x<6;x++)
+		for(y=0;y<6;y++)
+			if (map[x][y] != robot && map[x][y] != goal)
+				map[x][y]=nothing;
+	}
+
+
+//this function looks at a node and returns the lowest value around that node
+//1 is up, 2 is right, 3 is down, and 4 is left (clockwise)
+int min_surrounding_node_value(int x, int y)
+	{
+	minimum_node=reset_min;//reset minimum
+
+	//down
+	if(x < 5)//not out of boundary
+		if  (map[x+1][y] < minimum_node && map[x+1][y] != pathway)//find the lowest number node, and exclude empty nodes (0's)
+		    {
+			minimum_node = map[x+1][y];
+			min_node_location=3;
+            }
+
+	//up
+	if(x > 0)
+		if  (map[x-1][y] < minimum_node && map[x-1][y] != pathway)
+		    {
+			minimum_node = map[x-1][y];
+			min_node_location=1;
+            }
+	
+	//right
+	if(y < 5)
+		if  (map[x][y+1] < minimum_node && map[x][y+1] != pathway)
+		    {
+			minimum_node = map[x][y+1];
+			min_node_location=2;
+            }
+            
+	//left
+	if(y > 0)
+		if  (map[x][y-1] < minimum_node && map[x][y-1] != pathway)
+		    {
+			minimum_node = map[x][y-1];
+			min_node_location=4;
+            }
+	   
+	return minimum_node;
+	}
+
+
 void setup() {
   // put your setup code here, to run once:
-
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   // Propagate the wavefront from the start location
-propagate_wavefront(robot_x, robot_y, goal_x,  goal_y);
-  
-  
-  motors.setSpeeds(TURN_SPEED, -TURN_SPEED);
-  delay(TURN_DURATION);
+  int next_direction = propagate_wavefront(robot_x, robot_y, goal_x,  goal_y);
+  // move the robot in the appropriate direction
 
-  motors.setSpeeds(STOP, STOP);
-  delay(STOP_DURATION);
+    if (next_direction == 1) {
+    //move the robot up
+     motors.setSpeeds(FORWARD_SPEED, FORWARD_SPEED);
+     delay(FORWARD_DURATION);
+   } 
 
-  motors.setSpeeds(REVERSE_SPEED,REVERSE_SPEED);
-  delay(REVERSE_DURATION);
+   else if (next_direction == 2) {
+    // move the robot right
+    motors.setSpeeds(TURN_SPEED, -TURN_SPEED);
+    delay(TURN DURATION);
+  } 
+  else if (next_direction == 3) {
+    // move the robot down
+    motors.setSpeeds(REVERSE_SPEED,REVERSE_SPEED);
+    delay(REVERSE_DURATION);
+  } 
+  else if (next_direction == 4) {
+    // move the robot left
+    motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
+    delay(TURN DURATION);
+  }
 
 }
