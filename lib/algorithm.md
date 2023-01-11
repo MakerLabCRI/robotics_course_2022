@@ -1,3 +1,7 @@
+Update 10 January 2023:
+Defined an array of coordinates that make up the path of the robot. As the program iterates through the array of coordinates with position information (robot is facing north, south, east, or west), the Zumo robot moves accordingly forward, left or right. 
+
+--------------------------------------------------------------------------------------------------------
 tried to implement dijkstra, but difficult to put together code with our basic C++ skill level. 
 
 Changed tactic to use wavefront algorithm in pathplanning
