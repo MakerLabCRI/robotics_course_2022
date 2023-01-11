@@ -1,4 +1,4 @@
-Update 10 January 2023:
+<b>Update 10 January 2023:</b>
 Defined an array of coordinates that make up the path of the robot. As the program iterates through the array of coordinates with position information (robot is facing north, south, east, or west), the Zumo robot moves accordingly forward, left or right. 
 
 --------------------------------------------------------------------------------------------------------
