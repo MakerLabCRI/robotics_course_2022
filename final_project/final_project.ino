@@ -86,13 +86,14 @@ int reset_min=250;//
 
 int grid[8][8]=	{{1,0,0,0,255,0,0,255},
 				 {0,0,255,0,0,0,0,0},
-				 {0,0,0,0,0,255,0,0},
+
+				 {0,255,0,0,0,0,0,0},
 				 {0,255,0,255,0,0,0,255},
-				 {0,0,0,0,0,0,255,0},
-				 {0,255,0,255,255,0,0,0},
+				 {0,0,0,0,0,0,0,0},
+				 {0,255,0,0,255,255,0,0},
          {0,0,0,0,0,0,0,0},
-         {0,0,0,255,255,0,0,254},
-         };
+         {0,0,0,255,255,0,0,254}};
+
 
 /********************functions*******************/
 
@@ -108,7 +109,9 @@ int propagate_wavefront(int robot_x, int robot_y, int goal_x, int goal_y)
         y=0;
     	while(x<8 && y<8)//while the grid hasnt been fully scanned
     		{
-    		//if this location is a wall or the goal, just ignore it
+
+    		//if this location is an obstacle or the goal, just ignore it
+
     		if (grid[x][y] != obstacle && grid[x][y] != goal)
     			{	
     			//a full trail to the robot has been located, finished!
@@ -124,7 +127,7 @@ int propagate_wavefront(int robot_x, int robot_y, int goal_x, int goal_y)
     		
     		//go to next node and/or row
     		y++;
-    		if (y==6 && x!=6)
+    		if (y==8 && x!=8)
     			{
     			x++;
     			y=0;
@@ -138,8 +141,9 @@ int propagate_wavefront(int robot_x, int robot_y, int goal_x, int goal_y)
 void unpropagate(int robot_x, int robot_y)//clears old path to determine new path
 	{
 	//stay within boundary
-	for(x=0; x<6; x++)
-		for(y=0; y<6; y++)
+
+	for(x=0; x<8; x++)
+		for(y=0; y<8; y++)
 			if (grid[x][y] != obstacle && grid[x][y] != goal) //if this location is something, just ignore it
 				grid[x][y] = pathway;//clear that space
 	
@@ -153,8 +157,10 @@ void unpropagate(int robot_x, int robot_y)//clears old path to determine new pat
 //if no solution is found, delete all obstacles from grid
 void clear_grid(void)
 	{	
-	for(x=0;x<6;x++)
-		for(y=0;y<6;y++)
+
+	for(x=0;x<8;x++)
+		for(y=0;y<8;y++)
+
 			if (grid[x][y] != robot && grid[x][y] != goal)
 				grid[x][y]=pathway;
 	}
@@ -168,7 +174,8 @@ int min_surrounding_node_value(int x, int y)
 
 	//down
 	if(x < 8)//not out of boundary
-		if  (grid[x+1][y] < minimum_node && grid[x+1][y] == pathway)//find the lowest number node, and exclude empty nodes (0's)
+		if  (grid[x+1][y] < minimum_node && grid[x+1][y] != pathway)//find the lowest number node, and exclude empty nodes (0's)
+
 		    {
 			minimum_node = grid[x+1][y];
 			min_node_location=3;
@@ -176,7 +183,9 @@ int min_surrounding_node_value(int x, int y)
 
 	//up
 	if(x > 0)
-		if  (grid[x-1][y] < minimum_node && grid[x-1][y] == pathway)
+
+		if  (grid[x-1][y] < minimum_node && grid[x-1][y] != pathway)
+
 		    {
 			minimum_node = grid[x-1][y];
 			min_node_location=1;
@@ -184,7 +193,9 @@ int min_surrounding_node_value(int x, int y)
 	
 	//right
 	if(y < 8)
-		if  (grid[x][y+1] < minimum_node && grid[x][y+1] == pathway)
+
+		if  (grid[x][y+1] < minimum_node && grid[x][y+1] != pathway)
+
 		    {
 			minimum_node = grid[x][y+1];
 			min_node_location=2;
@@ -192,7 +203,7 @@ int min_surrounding_node_value(int x, int y)
             
 	//left
 	if(y > 0)
-		if  (grid[x][y-1] < minimum_node && grid[x][y-1] == pathway)
+		if  (grid[x][y-1] < minimum_node && grid[x][y-1] != pathway)
 		    {
 			minimum_node = grid[x][y-1];
 			min_node_location=4;
@@ -205,19 +216,21 @@ int min_surrounding_node_value(int x, int y)
 
 void setup() {
   Serial.begin(19200);
-}
 
 void loop() {
   // Propagate the wavefront from the start location
-  int next_direction = propagate_wavefront(robot_x, robot_y, goal_x, goal_y);
-  Serial.println('hi');
+
+  int next_direction = min_surrounding_node_value(x, y);
+  Serial.print(min_node_location);
+
   // move the robot in the appropriate direction
 
   if (next_direction == 1) {
     //move the robot up
     //Serial.print(next_direction);
     motors.setSpeeds(FORWARD_SPEED, FORWARD_SPEED);
-    //Serial.println('move the robot up');
+
+    Serial.println('move the robot up');
      //delay(FORWARD_DURATION);
    } 
 
@@ -239,9 +252,11 @@ void loop() {
     motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
     //delay(TURN_DURATION);
   }
-  else{
-    //Serial.println('stuck');
+
+  else {
+    Serial.println('stuck');
   }
   
+  delay(1000);
 
 }
