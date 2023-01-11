@@ -1,4 +1,4 @@
-/*
+/**
  * Pololu Zumo Robot with Obstacle Avoidance 
  *
  * by Clemence, Romaric & Tiffany 
@@ -6,7 +6,8 @@
  * This robot will travel from start to goal in a 8x8 grid while
  * avoiding known obstacles placed on the grid.
  * 
- */
+*/
+
 // import library
 #include <ZumoShield.h>
 
@@ -39,7 +40,6 @@ int grid[X][Y]=	{
          {0,0,0,1,1,0,0,0},
          };
 
-*/
 
 
 void setup() {
@@ -67,13 +67,13 @@ int path[PATH_LEN][2] = {
   {7,7}
 };
 
-/*
-goPath,
-This function moves the robot to the next location in the path.
-inputs = currentX: x current location, currentY: y current location, nextX: next x location, nextY: next y location 
-output = status of our followed path (3 for goal reached, 2 if obstacle detected, 1 for no direction 
-
+/**
+  goPath,
+  This function moves the robot to the next location in the path.
+  inputs = currentX: x current location, currentY: y current location, nextX: next x location, nextY: next y location 
+  output = status of our followed path (3 for goal reached, 2 if obstacle detected, 1 for no direction 
 */
+
 int goPath(int currentX,int currentY,int nextX,int nextY ){
     
     int returnValue = 1;
@@ -112,11 +112,11 @@ int goPath(int currentX,int currentY,int nextX,int nextY ){
 
 }
 
-/*
-goNext,
-Depending on the current position, the robot moves to the next square on the grid.
-input = x: x current, y: y current, w: x next, z: y next
-output = f: front, b:back, l:left, r:right
+/**
+ goNext,
+ Depending on the current position, the robot moves to the next square on the grid.
+ input = x: x current, y: y current, w: x next, z: y next
+ output = f: front, b:back, l:left, r:right
 */
 char goNext(int x,int y,int w,int z){
 
@@ -198,7 +198,7 @@ void turnRight(){
 int count = 0;
 
 void loop() {
-  // 
+  // setting currentX and currentY variables to path values in PATH_LEN and goPath is called
   if(count == 0){
     for(int i = 0; i < PATH_LEN -1 ; i++){
       int currentX =  path[i][0];
