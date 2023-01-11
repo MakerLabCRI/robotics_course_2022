@@ -3,13 +3,15 @@
  *
  * by Clemence, Romaric & Tiffany 
  *
- * This robot will find the shortest path from point A to B
- * in a 8x8 grid while avoiding known obstacles placed on the grid.
- * 
- */
 
-/*
+ * This code will find the shortest path from point A to B
+ * in a 8x8 grid while avoiding obstacles placed on the grid.
+
+ * 
+ /*
 maze format
+
+
 7 _ _ _ _ _ _ _ _
 6 _ _ _ _ _ _ _ _
 5 _ _ _ _ _ _ _ _
@@ -19,6 +21,7 @@ maze format
 1 _ _ _ _ _ _ _ _
 0 _ _ _ _ _ _ _ _
   0 1 2 3 4 5 6 7
+
 start=0-0;
 arrival=7-7;
 */
@@ -214,6 +217,9 @@ int min_surrounding_node_value(int x, int y)
 	}
 
 
+*/
+
+
 void setup() {
   Serial.begin(19200);
 
@@ -259,4 +265,3 @@ void loop() {
   
   delay(1000);
 
-}
