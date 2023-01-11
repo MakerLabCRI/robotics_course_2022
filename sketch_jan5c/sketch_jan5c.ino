@@ -1,6 +1,5 @@
 #include <ZumoShield.h>
 
-ZumoBuzzer buzzer;
 ZumoMotors motors;
 int lastError = 0;
 
@@ -35,12 +34,13 @@ int counter=0;
 
 //for looking for smallest node number
 int minimum_node=250;
-int min_node_location=0;
+int min_node_location=1;
 int reset_min=250;//
 
 //defining grid for pathfinding 
-
-int grid[8][8]=	{{1,0,0,0,255,0,0,255},
+/*
+int grid[8][8]=	{
+         {1,0,0,0,255,0,0,255},
 				 {0,0,255,0,0,0,0,0},
 				 {0,0,0,0,0,255,0,0},
 				 {0,255,0,255,0,0,0,255},
@@ -52,7 +52,7 @@ int grid[8][8]=	{{1,0,0,0,255,0,0,255},
 
 /********************functions*******************/
 
-int propagate_wavefront(int robot_x, int robot_y, int goal_x, int goal_y)
+/*int propagate_wavefront(int robot_x, int robot_y, int goal_x, int goal_y)
 	{
 	//clear old wavefront
 	unpropagate(robot_x, robot_y);
@@ -157,18 +157,19 @@ int min_surrounding_node_value(int x, int y)
 	   
 	return minimum_node;
 	}
+*/
+
 
 void move(int min_node_location) {
-  switch(min_node_location) {
-    case 1:
+  if (min_node_location == 1){
       // move up
       motors.setSpeeds(FORWARD_SPEED, FORWARD_SPEED);
       delay(FORWARD_DURATION);
       motors.setSpeeds(STOP, STOP);
       delay(STOP_DURATION);
       robot_y--; 
-      break;
-    case 2:
+    }
+    else if (min_node_location == 2){
       // move right
       motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
       delay(TURN_DURATION);
@@ -177,16 +178,18 @@ void move(int min_node_location) {
       motors.setSpeeds(STOP, STOP);
       delay(STOP_DURATION);
       robot_x++;
-      break;
-    case 3:
+    }
+    
+    else if (min_node_location += 3){
       // move down
       motors.setSpeeds(-REVERSE_SPEED, -REVERSE_SPEED);
       delay(REVERSE_DURATION);
       motors.setSpeeds(STOP, STOP);
       delay(STOP_DURATION);
       robot_y++;
-      break;
-    case 4:
+    }
+    else if (min_node_location == 4)
+    {
       // move left
       motors.setSpeeds(TURN_SPEED, -TURN_SPEED);
       delay(TURN_DURATION);
@@ -195,20 +198,27 @@ void move(int min_node_location) {
       motors.setSpeeds(STOP, STOP);
       delay(STOP_DURATION);
       x--;
-      break;
+    }
   }
-}
+
 
 void setup() {
   Serial.begin(19200);
+  delay(5000);
+  Serial.println("hi");
 }
 
 void loop() {
-  int path = propagate_wavefront(robot_x, robot_y, goal_x, goal_y);
-  unpropagate(robot_x, robot_y);
+  //int path = propagate_wavefront(robot_x, robot_y, goal_x, goal_y);
+  //unpropagate(robot_x, robot_y);
+  if (min_node_location > 4){
+    min_node_location = 1;
+  }
   move(min_node_location);
-  grid[robot_x][robot_y]=robot;
+
   Serial.println('hiihi');
+  min_node_location++;
   
+
 
 }
