@@ -39,6 +39,9 @@ int grid[X][Y]=	{
          {0,0,0,1,1,0,0,0},
          };
 
+*/
+
+
 void setup() {
   // put your setup code here, to run once:
   position = 'n';
@@ -215,4 +218,3 @@ void loop() {
     count++;
   }
 
-}
