@@ -30,6 +30,15 @@ This is the repository of the [LPI](https://www.learningplanetinstitute.org/en),
 * Team formation + Ideation report
 * Project week - Project mainly focusing on solving the challenge while addressing odometry or kinematics problems. Implementation of your own algorithm to optimise the results.
 
+## General Algorithm
+
+![WhatsApp Image 2023-01-05 at 02 10 01](https://user-images.githubusercontent.com/113441374/211695876-3de23d4a-08ad-44cb-9595-b7b99a7c9578.jpg)
+
+## A* Algorithm
+
+![image](https://user-images.githubusercontent.com/113441374/211696021-2a777b58-28ab-4869-af80-ab5d695bcebe.png)
+
+
 # Mini project guide
 Fork this repository and add your team members as collaborators to your fork. Make sure it is a public repository.
 

@@ -1,0 +1,183 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+//Defining the start and end nodes
+int start_x =1;
+int start_y=0;
+int end_y=5;
+int end_x=9;
+
+//Creating a struct to store all the nodes that the robot can take
+
+typedef struct {
+    int x; //position of x
+    int y; //position of y
+    double f;
+    double g;
+    double h;
+}Node;
+
+typedef struct{
+    Node info;
+    struct List_node* next;
+}List_node;
+
+
+// Creating a simple list to store the nodes
+
+List_node* creation(List_node* new_node, List_node* startnode, Node node, List_node* endnode) {
+
+	new_node->info.x = node.x;
+	new_node->info.y = node.y;
+	new_node->info.g = abs((new_node->info.x - startnode->info.x) + (new_node->info.y - startnode->info.y));
+	new_node->info.h = abs((new_node->info.x - endnode->info.x) + (new_node->info.y - endnode->info.y));
+    new_node->info.f = new_node->info.g + new_node->info.h;
+
+    return new_node;
+}
+
+//Creating a function to insert new nodes
+
+List_node* inseration(List_node* startnode, Node node, List_node* endnode)
+{
+    List_node* new_node = (List_node*)malloc(sizeof(List_node));
+    new_node = creation(new_node, startnode, node, endnode);
+
+	if (startnode)
+	{
+		List_node* aux = startnode;
+		while (aux->next)
+			aux = aux->next;
+		aux->next = new_node;
+	}
+	else
+		startnode = new_node;
+
+    int min = 10000;
+    int count = 0;
+
+    //Allocating memory for the new nodes the robot can take
+    //It can go left, right, down and up
+    List_node* left_node = (List_node*)malloc(sizeof(List_node));
+    List_node* up_node = (List_node*)malloc(sizeof(List_node));
+    List_node* right_node = (List_node*)malloc(sizeof(List_node));
+    List_node* down_node = (List_node*)malloc(sizeof(List_node));
+
+    //The robot goes left
+    if(node.x > 0) { //
+        Node nodeLeft;
+        nodeLeft = node;
+        nodeLeft.x = node.x - 1;
+        left_node = creation(left_node, startnode, nodeLeft, endnode);
+        if(left_node->info.f < min)
+        {
+            min = left_node->info.f;
+            count = 4;
+        }
+    }
+
+    //The robot goes uo
+    if(node.y > 0) {
+        Node nodeUp;
+        nodeUp = node;
+        nodeUp.y = node.y + 1;
+        up_node = creation(up_node, startnode, nodeUp, endnode);
+        if(up_node->info.f < min)
+        {
+            min = up_node->info.f;
+            count = 1;
+        }
+    }
+
+    //The robot goes right
+    if(node.x < 7) {
+        Node nodeRight;
+        nodeRight = node;
+        nodeRight.x = node.x + 1;
+        right_node = creation(right_node, startnode, nodeRight, endnode);
+        if(right_node->info.f < min)
+        {
+            min = right_node->info.f;
+            count = 2;
+        }
+    }
+
+    //The robot goes down
+    if(node.y < 7) {
+        Node nodeDown;
+        nodeDown = node;
+        nodeDown.y = node.y - 1;
+        down_node = creation(down_node, startnode, nodeDown, endnode);
+        if(down_node->info.f < min)
+        {
+            min = down_node->info.f;
+            count = 3;
+        }
+    }
+
+    //The robot goes up
+    if(count == 1) {
+        new_node->next = up_node;
+    } else if (count == 2) {
+        new_node->next = right_node;
+    } else if (count == 3) {
+        new_node->next = down_node;
+    } else {
+        new_node->next = left_node;
+    }
+
+    if(new_node->info.x != end_x && new_node->info.y != end_y)
+        return startnode;
+    else
+        inseration(startnode, node, endnode);
+}
+
+void path(List_node* head)
+{
+	List_node* aux = head;
+	while (aux)
+	{
+		printf("\n(%d, %d) ",
+			aux->info.x, aux->info.y);
+		aux = aux->next;
+	}
+}
+
+void main()
+{
+    //Initializing the end node
+
+    List_node *Endnode;
+    Endnode->info.x = end_x;
+    Endnode->info.y = end_y;
+    Endnode->info.g = 0;
+    Endnode->info.h = 0;
+    Endnode->info.f = 0;
+    Endnode->next = NULL;
+
+    int maze[8][8] =
+            {{0, 0, 1, 0, 0, 0, 0, 0},
+            { 0, 0, 1, 0, 0, 0, 0, 0},
+            { 0, 0, 1, 0, 0, 0, 0, 0},
+            { 0, 0, 1, 0, 0, 0, 0, 0},
+            { 0, 0, 1, 0, 0, 0, 0, 0},
+            { 0, 0, 0, 0, 0, 0, 0, 0},
+            { 0, 0, 1, 0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0, 0, 0, 0}};
+
+    for(int i = 0; i < 8; i++)
+        for(int j = 0; j < 8; j++) {
+
+            List_node *Startnode;
+            Node node;
+            node.x = start_x;
+            node.y = start_y;
+            node.g = 0;
+            node.h = 0;
+            node.f = 0;
+            Startnode->info = node;
+            Startnode->next = NULL;
+
+            Startnode = inseration(Startnode, node, Endnode);
+        }
+}
